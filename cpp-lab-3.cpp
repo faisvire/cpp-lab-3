@@ -3,42 +3,36 @@
 #include <malloc.h>
 #include <cmath>
 using namespace std;
-// функция нахождения суммы n значений массива
-int funcsumarr(int* a, int n) {
-	int sum = 0;
-	for (int i = 0; i < n; i++) {
-		sum += a[i];
+// функция нахождения минимума
+long long sum_arr = 0;
+long long minrazn = LLONG_MAX;
+long long minimum(long long a, long long b) {
+	if (a > b) {
+		return b;
 	}
-	return sum;
+	else {
+		return a;
+	}
 }
-// функция для нахождения суммы подмножества в множестве
-bool result(int* a, int n, int sum) {
-	if (sum == 0) {
-		return 1;
-	}
-	else if (sum < 0 || n < 0) {
+// функция для нахождения мин.разницы через сумму подмножества в множестве
+int result(long long* a, int i, int n, long long sum) {
+	if (i == n)
 		return 0;
-	}
-	bool caseincl = result(a, (n - 1), sum - a[n]);
-	bool caseexl = result(a, (n - 1), sum);
-	return caseincl || caseexl;
+	minrazn = minimum(minrazn, abs(sum - (sum_arr - sum)));
+	result(a, i + 1, n, sum);
+	result(a, i + 1, n, sum + a[i]);
+	return 0;
 }
-int main() {
+	int main() {
 	int n;
-	int pr1 = 0;
 	cin >> n;
-	int* cki = (int*)malloc(n * sizeof(int));
-	for (int i = 0; i < n; i++) {
+	auto cki = (long long*)malloc(n * sizeof(long long));
+	for (long long i = 0; i < n; i++) {
 		cin >> cki[i];
+		sum_arr += cki[i];
 	}
-	int sumarr = funcsumarr(cki, n);
-	int sumarr2 = funcsumarr(cki, n) / 2;
-	for (int i = 0; i < sumarr2; i++) {
-		if (result(cki, n, sumarr2 - i) == 1) {
-			pr1 = sumarr2 - i;
-			break;
-		}
-	}
-	int pr2 = sumarr - pr1;
-	cout << "Минимальная разница между порциями = " << abs(pr2 - pr1);
+	int i = 0;
+	result(cki, i, n, 0);
+	cout << "Минимальная разница между порциями Маши и Пети = " << minrazn;
+	free(cki);
 }
